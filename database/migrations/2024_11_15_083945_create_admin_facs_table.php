@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('admin_facs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(University::class);
-            $table->foreignIdFor(Faculty::class);
+            $table->foreignIdFor(University::class)->constrained();
+            $table->foreignIdFor(Faculty::class)->constrained();
             $table->timestamps();
         });
     }
