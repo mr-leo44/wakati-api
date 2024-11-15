@@ -2,23 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Faculty;
+use App\Models\University;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class University extends Model
+class Faculty extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'name',
-        'sigle',
-        'email',
-        'localisation',
-        'address',
-        'phone',
-        'website',
+        'sigle'
     ];
 
     public function getSigleAttribute(String $value)
@@ -31,8 +23,8 @@ class University extends Model
         return 'sigle';
     }
 
-    public function faculties(): BelongsToMany
+    public function universities(): BelongsToMany
     {
-        return $this->belongsToMany(Faculty::class);
+        return $this->belongsToMany(University::class);
     }
 }
