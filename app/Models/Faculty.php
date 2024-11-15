@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AdminFac;
 use App\Models\Promotion;
 use App\Models\University;
 use Illuminate\Database\Eloquent\Model;
@@ -34,4 +35,10 @@ class Faculty extends Model
     {
         return $this->hasMany(Promotion::class);
     }
+
+    public function adminFacs(): HasMany
+    {
+        return $this->hasMany(AdminFac::class);
+    }
+
 }
