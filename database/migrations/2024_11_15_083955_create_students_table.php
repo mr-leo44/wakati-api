@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Promotion::class);
-            $table->foreignIdFor(University::class);
+            $table->foreignIdFor(Promotion::class)->constrained();
+            $table->foreignIdFor(University::class)->constrained();
             $table->timestamps();
         });
     }
