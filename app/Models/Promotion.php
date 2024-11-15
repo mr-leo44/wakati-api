@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Faculty;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Promotion extends Model
@@ -28,4 +30,10 @@ class Promotion extends Model
     {
         return $this->belongsTo(Faculty::class);
     }
+
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
+
 }
