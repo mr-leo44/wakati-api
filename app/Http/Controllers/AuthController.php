@@ -30,10 +30,12 @@ class AuthController extends Controller
                 $type_user = $user->account->accountables->getMorphClass();
                 $type_user = class_basename($type_user);
 
+                Auth::login($user);
+
                 return response()->json([
                     'user' => $user,
-                    'tooken' => $token,
-                    'type_user' => $type_user,
+                    'token' => $token,
+                    'type' => $type_user,
                 ]);
             }
         } catch (\Exception $e) {
