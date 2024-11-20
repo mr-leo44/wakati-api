@@ -16,10 +16,7 @@ class PasswordGeneratedMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(public $user, public $password, public $activationToken){}
 
     /**
      * Get the message envelope.
@@ -27,7 +24,7 @@ class PasswordGeneratedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Password Generated Mail',
+            subject: 'Activation de votre compte wakati-app',
         );
     }
 
@@ -36,11 +33,16 @@ class PasswordGeneratedMail extends Mailable
      */
     public function content(): Content
     {
+        $activationUrl = config('app.frontend_url)' . '/activate?token=' . $this->activationToken);
         return new Content(
-            view: 'view.name',
+            view: 'mails.activation-token',
+            with: [
+                'user' => $this->user,
+                'activationUrl' => $activationUrl,
+                'password' => $this->password,
+            ]
         );
     }
-
     /**
      * Get the attachments for the message.
      *
