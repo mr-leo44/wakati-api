@@ -45,21 +45,15 @@ class AccountService
             $user->save();
 
             Mail::to($user->email, $user->name)->send(new ActivationMail($user, $activationCode));
-            $token = $user->createToken('AuthToken')->plainTextToken;
-            $result = [
-                'user' => $user,
-                'token' => $token
-            ];
         } else {
             $activationToken = Str::random(64);
             $user->activation_token = $activationToken;
             $user->save();
 
             Mail::to($user->email, $user->name)->send(new PasswordGeneratedMail($user, $password, $activationToken));
-            $result = $user;
         }
 
-        return $result;
+        return $user;
     }
 
     public function activateStudent(User $user, int $code)
@@ -73,7 +67,10 @@ class AccountService
 
         $user->account->update(['is_active' => true]);
 
-        return $user;
+        return [
+            'user' => $user,
+            'token' => $user->createToken($user->name)->plainTextToken
+        ];
     }
 
     public function activateUser(User $user)
