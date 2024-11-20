@@ -16,10 +16,7 @@ class ActivationMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(public $user, public int $activationCode){}
 
     /**
      * Get the message envelope.
@@ -27,7 +24,7 @@ class ActivationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Activation Mail',
+            subject: 'Confirmation de votre Inscription à wakati App',
         );
     }
 
@@ -37,7 +34,11 @@ class ActivationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mails.activation-code',
+            with: [
+                'user' => $this->user,
+                'code' => $this->activationCode,
+            ]
         );
     }
 
