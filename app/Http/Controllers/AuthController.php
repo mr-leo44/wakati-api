@@ -52,12 +52,10 @@ class AuthController extends Controller
         ]);
 
         $result = $this->accountService->createUser(array_merge($validated, ['accountable_type' => Student::class, 'accountable_id' => $student->id]));
-        
-        return response()->json([
-            'message' => 'Compte créé avec succès',
-            'user' => $result['user'],
-            'token' => $result['token'],
-        ], 201);
+            return response()->json([
+                'message' => 'Compte créé avec succès',
+                'user' => $result,
+            ], 201);
     }
 
     public function activate(Request $request)
@@ -69,7 +67,8 @@ class AuthController extends Controller
             $activatedUser = $this->accountService->activateStudent($user, $code);
             return response()->json([
                 'message' => 'Compte activé avec succès',
-                'user' => $activatedUser
+                'user' => $activatedUser['user'],
+                'token' => $activatedUser['token']
             ]);
         } catch (\Exception $e) {
             return response()->json([
