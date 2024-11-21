@@ -76,6 +76,24 @@ class AuthController extends Controller
         return response()->json(['message' => 'Code envoyé par mail']);
     }
 
+    public function verifyResetCode(Request $request): JsonResponse
+    {
+        $success = $this->accountService->verifyResetCode($request->email, $request->resetCode);
+        if(!$success) {
+            return response()->json(['message' => 'Code invalide'], 400);
+        }
+        return response()->json(['message' => 'Code valide']);
+    }
+
+    public function resetNewPassword(Request $request): JsonResponse
+    {
+        $success = $this->accountService->resetPassword($request->email, $request->newPassword);
+        if(!$success) {
+            return response()->json(['message' => 'erreur de réinitialisation'], 400);
+        }
+        return response()->json(['message' => 'Mot de passe réinitialisé avec succès']);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
