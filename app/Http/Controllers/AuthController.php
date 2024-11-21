@@ -91,7 +91,7 @@ class AuthController extends Controller
             'code' => 'required|integer|digits:5'
         ]);
 
-        $success = $this->accountService->verifyResetCode($request->email, $request->resetCode);
+        $success = $this->accountService->verifyResetCode($request->email, $request->code);
         if(!$success) {
             return response()->json(['message' => 'Code invalide'], 400);
         }
