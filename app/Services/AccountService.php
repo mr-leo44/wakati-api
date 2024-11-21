@@ -22,7 +22,7 @@ class AccountService
         $base_string = Str::random($length - 2);
         $base_string .= strtoupper(Str::random(1));
         $base_string .= $specials_chars[array_rand($specials_chars)];
-        return Str::shuffle($base_string);
+        return str_shuffle($base_string);
     }
 
     public function createUser(array $data)
