@@ -17,7 +17,7 @@ class UserController extends Controller
     public function register(RegisterRequest $request)
     {
         $validated = $request->validated();
-        if ($validated['type'] === 'superAdmin') {
+        if ($validated['type'] === 'super_admin') {
             $accountable = SuperAdmin::create();
             $result = $this->getCreateUserByService(SuperAdmin::class, $validated, $accountable->id);
         } elseif ($validated['type'] === 'admin') {
@@ -49,7 +49,7 @@ class UserController extends Controller
 
     public function activate($token)
     {
-        $user = User::where('activation_code', $token)->first();
+        $user = User::where('activation_token', $token)->first();
 
         if (!$user) {
             return response()->json([
