@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Admin;
 use App\Models\AdminFac;
 use App\Models\Professor;
@@ -44,5 +45,23 @@ class UserController extends Controller
     private function getCreateUserByService($class, array $request, int $accountable_id)
     {
         return $this->accountService->createUser(array_merge($request, ['accountable_type' => $class, 'accountable_id' => $accountable_id]));
+    }
+
+    public function activate($token)
+    {
+        $user = User::where('activation_code', $token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Erreur d\'activation de compte'
+            ], 400);
+        }
+        
+        $activatedUser = $this->accountService->activateUser($user);
+        return response()->json([
+            'message' => 'Compte activé avec succès',
+            'user' => $activatedUser['user'],
+            'token' => $activatedUser['token']
+        ]);
     }
 }
