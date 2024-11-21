@@ -102,10 +102,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'newPassword' => 'required_if:type,student|string|min:8|max:15|regex:/[A-Z]/|regex:/[@$!%*#?&]/',
+            'password' => 'required|confirmed|string|min:8|max:15|regex:/[A-Z]/|regex:/[@$!%*#?&]/',
         ]);
 
-        $success = $this->accountService->resetPassword($request->email, $request->newPassword);
+        $success = $this->accountService->resetPassword($request->email, $request->password);
         if(!$success) {
             return response()->json(['message' => 'erreur de réinitialisation'], 400);
         }
