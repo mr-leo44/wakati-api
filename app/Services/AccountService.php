@@ -46,6 +46,7 @@ class AccountService
         if ($data['type'] === 'student') {
             $activationCode = rand(100000, 999999);
             $user->activation_code = $activationCode;
+            $user->activation_code_expires_at = Carbon::now()->addMinutes(5);
             $user->save();
 
             Mail::to($user->email, $user->name)->send(new ActivationMail($user, $activationCode));
@@ -67,9 +68,11 @@ class AccountService
         }
 
         $user->activation_code = null;
+        $user->activation_code_expires_at = null;
         $user->save();
+        $user->account->is_active = true;
+        $user->account->save();
 
-        $user->account->update(['is_active' => true]);
 
         return [
             'user' => $user,
@@ -82,8 +85,9 @@ class AccountService
         $user->password_set = true;
         $user->activation_token = null;
         $user->save();
+        $user->account->is_active = true;
+        $user->account->save();
 
-        $user->account->update(['is_active' => true]);
 
         return [
             'user' => $user,
