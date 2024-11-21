@@ -121,11 +121,35 @@ class AccountService
         $resetCode = rand(10000, 99999);
         $user->update([
             'reset_code' => $resetCode,
-            'reset_code_expires' => Carbon::now()->addMinutes(5),
+            'reset_code_expires_at' => Carbon::now()->addMinutes(5),
         ]);
 
         Mail::to($user->email, $user->name)->send(new PasswordResetCodeMail($user, $resetCode));
+        
+        return true;
+    }
 
+    public function verifyResetCode(string $email, int $resetCode): bool
+    {
+        $user = User::where('email', $email)->first();
+        if (!$user || $user->reset_code !== $resetCode || $user->reset_code_expires_at->isPast()) {
+            return false;
+        }
+        return true;
+    }
+    
+    public function resetPassword(string $email, string $newPassword): bool
+    {
+        $user = User::where('email', $email)->first();
+        if(!$user) {
+            return false;
+        }
+
+        $user->update([
+            'password' => Hash::make($newPassword),
+            'reset_code' => null,
+            'reset_code_expires_at' => null
+        ]);
         return true;
     }
 }
