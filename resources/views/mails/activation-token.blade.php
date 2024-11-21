@@ -14,9 +14,9 @@
     <p>Pour finaliser l'activation de votre compte {{ config('app_name') }}, veuillez cliquer sur le lien ci-dessous
         pour l'activer</p>
     <p>{{ $activationUrl }}</p>
-    <p><b>Votre Mot de passe :</b> <u>{{ $password }}</u></p>
+    <p>Votre Mot de passe : <h3><strong>{{ $password }}</strong></h3></u></p>
     <br>
     <p>Cordialement!</p>
-    <p>{{ config('app.name') }}</p>
+    <p>Support {{ config('app.name') }}</p>
 
 </html>
