@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'university_id' => 'required_if:type,student,admin,admin_fac,professor|exists:universities,id',
             'faculty_id' => 'required_if:type,student,admin_fac|exists:faculties,id',
             'promotion_id' => 'required_if:type,student|exists:promotions,id',
-            'type' => 'required|string|in:student,admin,admin_fac,professor,superAdmin',
+            'type' => 'required|string|in:student,admin,admin_fac,professor,super_admin',
         ];
     }
 
