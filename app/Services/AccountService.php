@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Account;
 use Illuminate\Support\Str;
 use App\Mail\ActivationMail;
 use App\Mail\PasswordGeneratedMail;
+use App\Mail\PasswordResetCodeMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -22,6 +24,7 @@ class AccountService
         $base_string .= $specials_chars[array_rand($specials_chars)];
         return Str::shuffle($base_string);
     }
+
     public function createUser(array $data)
     {
         $password = $data['type'] === 'student' ? Hash::make($data['password']) : $this->generateRandomPassword();
@@ -106,5 +109,23 @@ class AccountService
             'token' => $token,
             'type_user' => $type_user,
         ];
+    }
+
+    public function sendResetCode(string $email): bool
+    {
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return false;
+        }
+
+        $resetCode = rand(10000, 99999);
+        $user->update([
+            'reset_code' => $resetCode,
+            'reset_code_expires' => Carbon::now()->addMinutes(5),
+        ]);
+
+        Mail::to($user->email, $user->name)->send(new PasswordResetCodeMail($user, $resetCode));
+
+        return true;
     }
 }
