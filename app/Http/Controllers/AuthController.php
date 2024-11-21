@@ -50,6 +50,10 @@ class AuthController extends Controller
 
     public function activate(Request $request)
     {
+        $request->validate([
+            'activation_code' => 'required|integer|digits:6',
+        ]);
+        
         $code = $request->activation_code;
         $user = User::where('activation_code', $code)->first();
 
@@ -69,6 +73,10 @@ class AuthController extends Controller
 
     public function sendResetCode(Request $request): JsonResponse
     {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
         $success = $this->accountService->sendResetCode($request->email);
         if(!$success) {
             return response()->json(['message' => 'Email non trouvé'], 404);
@@ -78,6 +86,11 @@ class AuthController extends Controller
 
     public function verifyResetCode(Request $request): JsonResponse
     {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'code' => 'required|integer|digits:5'
+        ]);
+
         $success = $this->accountService->verifyResetCode($request->email, $request->resetCode);
         if(!$success) {
             return response()->json(['message' => 'Code invalide'], 400);
@@ -87,6 +100,11 @@ class AuthController extends Controller
 
     public function resetNewPassword(Request $request): JsonResponse
     {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'newPassword' => 'required_if:type,student|string|min:8|max:15|regex:/[A-Z]/|regex:/[@$!%*#?&]/',
+        ]);
+
         $success = $this->accountService->resetPassword($request->email, $request->newPassword);
         if(!$success) {
             return response()->json(['message' => 'erreur de réinitialisation'], 400);
