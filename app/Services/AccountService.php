@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Support\Str;
 use App\Mail\ActivationMail;
 use App\Mail\PasswordGeneratedMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -78,12 +79,32 @@ class AccountService
         $user->password_set = true;
         $user->activation_token = null;
         $user->save();
-        
+
         $user->account->update(['is_active' => true]);
-        
+
         return [
             'user' => $user,
             'token' => $user->createToken($user->name)->plainTextToken
+        ];
+    }
+
+    public function loginUser(array $data)
+    {
+        $fieldType = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $user = User::with('account')->where($fieldType, $data['login'])->first();
+        if ($user === null || !Hash::check($data['password'], $user->password)) {
+            return response()->json(['error' => 'Identifiants incorrects'], 401);
+        } else {
+            $token = $user->createToken($user->name)->plainTextToken;
+            $type_user = $user->account->accountables->getMorphClass();
+            $type_user = class_basename($type_user);
+            Auth::login($user, true);
+        }
+
+        return [
+            'user' => $user,
+            'token' => $token,
+            'type_user' => $type_user,
         ];
     }
 }
