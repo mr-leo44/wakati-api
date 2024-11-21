@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Services\AccountService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
-use App\Services\AccountService;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -60,8 +60,8 @@ class AuthController extends Controller
 
     public function activate(Request $request)
     {
-        $user = Auth::user();
         $code = $request->activation_code;
+        $user = User::where('activation_code', $code)->first();
 
         try {
             $activatedUser = $this->accountService->activateStudent($user, $code);
