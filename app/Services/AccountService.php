@@ -76,9 +76,14 @@ class AccountService
     public function activateUser(User $user)
     {
         $user->password_set = true;
-        $user->account->update(['is_active' => true]);
+        $user->activation_token = null;
         $user->save();
-
-        return $user;
+        
+        $user->account->update(['is_active' => true]);
+        
+        return [
+            'user' => $user,
+            'token' => $user->createToken($user->name)->plainTextToken
+        ];
     }
 }
