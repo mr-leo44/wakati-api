@@ -67,6 +67,15 @@ class AuthController extends Controller
         }
     }
 
+    public function sendResetCode(Request $request): JsonResponse
+    {
+        $success = $this->accountService->sendResetCode($request->email);
+        if(!$success) {
+            return response()->json(['message' => 'Email non trouvé'], 404);
+        }
+        return response()->json(['message' => 'Code envoyé par mail']);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
